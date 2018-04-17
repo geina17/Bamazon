@@ -7,4 +7,4 @@ Then it will ask you which you would like to purchase.
 If you choose wisely, it will ask you how many you'd like. 
   If you choose a valid quantity to order, your order will placed and you will be given your total 
 If you choose poorly, it will say out of stock .
-![alt text](../images/stock.png)
+![Alt text](images/stock.png)
