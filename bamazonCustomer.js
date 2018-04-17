@@ -1,6 +1,6 @@
 var ask = require('inquirer');
 var mySQL = require('mysql');
-var tab = require("cli-table");
+// var tab = require("cli-table");
 
 //connect to server
 var conn = mySQL.createConnection({
@@ -8,7 +8,7 @@ var conn = mySQL.createConnection({
     port: 3306,
     user: 'root',
     password: 'root',
-    database: 'bamazon'
+    database: 'bz'
 });
 conn.connect(function(err){
     if(err)throw err;
@@ -24,6 +24,33 @@ function valInput(value) {
     } else {
         return 'Please enter a whole number.';
     }
+}
+//will retreve current invent
+function displayInven() {
+    //constructdb
+    var queryStr = 'select * from products';
+    // if(error) throw error;
+    //make the query db
+    conn.query(queryStr, function (err, data) {
+        if (err) throw err;
+        console.log('');
+        console.log('==================  WELCOME to BAMazoN! ==================');
+        console.log('');
+        console.log('Whats in stock:');
+        console.log('|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||');
+        // Draw the table in the terminal using the response
+        var strungOut = '';
+        for (var i = 0; i < data.length; i++) {
+            strungOut = '';
+            strungOut += 'Item Id: ' + data[i].id_item +  ' || ';
+            strungOut += 'Product Name: ' + data[i].product_name + '    || ';
+            strungOut += 'Dept: ' + data[i].dept_name + '   || ';
+            strungOut += 'Price: ' + data[i].price + '  || ';
+            strungOut += 'Stock Quant: ' + data[i].stock_quant + '  ||';
+            console.log(strungOut);
+        }
+        console.log('|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||');
+    });
 }
 
 //will prompt user for item/quant
@@ -49,7 +76,11 @@ function purchase() {
         var quant = input.stock_quant;
 
         //query db to confirm ID exists
-        // var queryStr = 'select * from products WHERE?';
+        var queryStr = 'select * from products WHERE id_item = ' + item ;
+        // console.log('built first part of string');
+        // console.log(queryStr);
+        // console.log('...');
+
         conn.query(queryStr, {
                 id_item: item
             },
@@ -61,14 +92,20 @@ function purchase() {
                 } else {
                     var productData = data[0];
                     if (quant <= productData.stock_quant) {
+                        console.log('');
                         console.log('Item is in stock!');
 
                         //construct the updating string
-                        var updateQuStr = 'update products set stock_quant =' + (productData.stock_quant - quant) + 'where item_id =' + item;
+                        // console.log('quant:' + quant );
+                        // console.log('productData.stock_quant:' + productData.stock_quant);
+                        var updateQuStr = 'update products set stock_quant = ' + (productData.stock_quant - quant) + ' where id_item = ' + item;
+                        // console.log(updateQuStr);
+                        // console.log('...')
 
                         //update invent
                         conn.query(updateQuStr, function (err, data) {
                             if (err) throw err;
+                            console.log('');
                             console.log('Your order has been placed');
                             console.log('Thank you for shopping with us!');
                             console.log('|||||||||||||||||||||||||||||||');
@@ -76,6 +113,7 @@ function purchase() {
                             conn.end();
                         });
                     } else {
+                        console.log('');
                         console.log('Sorry out of stock');
                         console.log('Please come back later');
                         console.log('|||||||||||||||||||||||');
@@ -86,34 +124,9 @@ function purchase() {
         );
     });
 }
-//will retreve current invent
-function displayInven() {
-    //constructdb
-    var queryStr = 'select * from products';
-    // if(error) throw error;
-    //make the query db
-    conn.query(queryStr, function (err, data) {
-        if (err) throw err;
-        // console.log('WELCOME to BAMAZON!');
-        console.log('Whats in stock:');
-        console.log('|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||');
-        // Draw the table in the terminal using the response
-        var strungOut = '';
-        for (var i = 0; i < data.length; i++) {
-            strungOut = '';
-            strungOut += 'Item Id:' + data[i].id_item + '//';
-            strungOut += 'Product Name:' + data[i].product_name + '//';
-            strungOut += 'Dept:' + data[i].dept_name + '//';
-            strungOut += 'Price:' + data[i].price + '//';
-            strungOut += 'Stock Quant.:' + data[i].stock_quant + '//';
-            console.log(strungOut);
-        }
-        console.log('|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||');
-        purchase();
-    });
-}
 
 function runBamazon() {
     displayInven();
+    purchase();
 }
 runBamazon();
