@@ -1,0 +1,27 @@
+{
+  "name": "bamazon",
+  "version": "1.0.0",
+  "description": "hw",
+  "main": "bamazonCustomer.js",
+  "scripts": {
+    "test": "ywa"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/geina17/Bamazon.git"
+  },
+  "keywords": [
+    "bazamon"
+  ],
+  "author": "gna",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/geina17/Bamazon/issues"
+  },
+  "homepage": "https://github.com/geina17/Bamazon#readme",
+  "dependencies": {
+    "cli-table": "^0.3.1",
+    "inquirer": "^5.2.0",
+    "mysql": "^2.15.0"
+  }
+}
